@@ -1,14 +1,33 @@
 const express = require("express");
+const app = express();
+const port = 3000;
 const cors = require("cors");
 const bodyParser = require("body-parser");
-const app = express();
+
+app.get("/", function (req, res) {
+  res.send("Qué Onda!!!");
+});
 
 const createDb = (data = []) => {
   return {
     // ensure no emoji id is repeated
     // keep unique names
     addItem(item) {
+      if (
+        data.some(function (dbItem) {
+          return dbItem.id !== item;
+        })
+      ) {
+        item = createGame(item.name);
+        createDb.addItem(item);
+      }
       data = [...data, item];
+    },
+    deleteItem(item) {
+      data.splice(data.indexOf(item), 1);
+    },
+    modifyItem(oldItem, newItem) {
+      data[data.indexOf(oldItem)] = oldItem.id + newItem;
     },
     getItems() {
       return [...data];
@@ -42,10 +61,6 @@ function createGame(name) {
 
 app.use(cors());
 app.use(bodyParser.json());
-
-app.get("/", function (req, res) {
-  res.send("Qué Onda!!!");
-});
 
 // GAMES
 app.get("/games", function (req, res) {
