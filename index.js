@@ -18,10 +18,8 @@ const createDb = (data = []) => {
           return dbItem.id !== item;
         })
       ) {
-        item = createGame(item.name);
-        createDb.addItem(item);
+        data = [...data, item];
       }
-      data = [...data, item];
     },
     deleteItem(item) {
       data.splice(data.indexOf(item), 1);
